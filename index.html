@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Competitor Ad Watch</title>
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#15191f; --ink2:#4a5360; --ink3:#7b8492; --line:#e2e5ea;
+  --accent:#1f5fbf; --accent-bg:#e8f0fc; --good:#1c7c4a; --good-bg:#e3f4ea; --hot:#b3261e; --hot-bg:#fbe9e7;
+  --warm:#9a5b00; --warm-bg:#fdf1dc; --chip:#eef0f3; --shadow:0 1px 2px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f1216; --panel:#171b21; --ink:#e8ebef; --ink2:#b3bac4; --ink3:#838c98; --line:#2a3039;
+  --accent:#7fb0ff; --accent-bg:#1a2a44; --good:#6fd39b; --good-bg:#15301f; --hot:#ff8a80; --hot-bg:#3a1a18;
+  --warm:#f0b95a; --warm-bg:#352812; --chip:#232932; --shadow:none; }}
+:root[data-theme="dark"]{
+  --bg:#0f1216; --panel:#171b21; --ink:#e8ebef; --ink2:#b3bac4; --ink3:#838c98; --line:#2a3039;
+  --accent:#7fb0ff; --accent-bg:#1a2a44; --good:#6fd39b; --good-bg:#15301f; --hot:#ff8a80; --hot-bg:#3a1a18;
+  --warm:#f0b95a; --warm-bg:#352812; --chip:#232932; --shadow:none; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:18px 24px 0;max-width:1500px;margin:0 auto}
+h1{font-size:20px;margin:0 0 2px;font-weight:650;letter-spacing:-.01em}
+.sub{color:var(--ink3);font-size:12.5px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;box-shadow:var(--shadow);text-align:left;font:inherit;color:inherit;cursor:pointer}
+.kpi:hover{border-color:var(--accent)}
+.kpi:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.kpi b{display:block;font-size:22px;font-variant-numeric:tabular-nums;font-weight:650}
+.kpi span{color:var(--ink3);font-size:12px}
+nav{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav button{background:none;border:0;border-bottom:2px solid transparent;padding:9px 14px;color:var(--ink2);font:inherit;cursor:pointer;white-space:nowrap}
+nav button.on{color:var(--ink);border-color:var(--accent);font-weight:600}
+nav button .n{color:var(--ink3);font-size:12px;margin-left:4px}
+main{max-width:1500px;margin:0 auto;padding:14px 24px 60px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center}
+.bar input,.bar select{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:6px 9px;font:inherit}
+.bar input[type=search]{min-width:260px;flex:1}
+.bar label{color:var(--ink2);font-size:13px;display:flex;gap:5px;align-items:center}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--ink3);font-weight:600;background:var(--panel);position:sticky;top:0;cursor:pointer;user-select:none}
+tr.camp{cursor:pointer}
+tr.camp:hover td{background:var(--accent-bg)}
+td.num{font-variant-numeric:tabular-nums;text-align:right}
+.chip{display:inline-block;background:var(--chip);border-radius:5px;padding:1px 7px;margin:1px 3px 1px 0;font-size:12px;white-space:nowrap}
+.chip.disc{font-style:italic}
+.tag{display:inline-block;border-radius:5px;padding:1px 7px;font-size:11.5px;font-weight:600}
+.tag.gap{background:var(--warm-bg);color:var(--warm)}
+.tag.ovl{background:var(--good-bg);color:var(--good)}
+.tag.new{background:var(--hot-bg);color:var(--hot)}
+.tag.off{background:var(--chip);color:var(--ink3)}
+.muted{color:var(--ink3)}
+.what{color:var(--ink2);font-size:12.5px;font-weight:400;margin-top:3px;max-width:520px;line-height:1.4}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow)}
+.card .img{aspect-ratio:1.6;background:var(--chip);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card .img img{width:100%;height:100%;object-fit:cover}
+.card .bd{padding:10px 12px;display:flex;flex-direction:column;gap:5px;flex:1}
+.card .who{font-size:12px;color:var(--ink3);display:flex;justify-content:space-between;gap:6px}
+.card .hl{font-weight:600}
+.card .rain{background:var(--warm-bg);color:var(--warm);border-radius:6px;padding:4px 8px;font-size:12px;font-weight:600}
+.card .rain .muted{font-weight:400}
+.card .tx{color:var(--ink2);font-size:13px;white-space:pre-wrap;max-height:9.5em;overflow:hidden}
+.card .ft{font-size:12px;color:var(--ink3);display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:auto;padding-top:6px;border-top:1px solid var(--line)}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.expand td{background:var(--bg)}
+.expand .grid{padding:8px 0}
+.empty{padding:40px;text-align:center;color:var(--ink3)}
+.topbtns{position:absolute;top:18px;right:24px;display:flex;gap:6px}
+.theme:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.theme{background:var(--panel);border:1px solid var(--line);color:var(--ink2);border-radius:7px;padding:5px 9px;cursor:pointer;font:inherit}
+code{background:var(--chip);padding:1px 5px;border-radius:4px;font-size:12px}
+@media (max-width:700px){header,main{padding-left:16px;padding-right:16px}.bar input[type=search]{min-width:0}.hide-sm{display:none}}
+</style>
+</head>
+<body>
+<div class="topbtns">
+  <button class="theme" id="refresh" title="Reload the latest published data">↻ Refresh</button>
+  <button class="theme" id="theme" title="Toggle theme">◐</button>
+</div>
+<header>
+  <h1>Competitor Ad Watch</h1>
+  <div class="sub" id="sub"></div>
+  <div class="kpis" id="kpis"></div>
+  <nav id="tabs"></nav>
+</header>
+<main id="main"><div class="empty">Loading…</div></main>
+<script>
+
+const __salt = Uint8Array.from(atob("ELVpBYRAnk7GMrUVQ8LSew=="), c => c.charCodeAt(0));
+let __key;
+async function __derive(pw) {
+  const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({name: "PBKDF2", salt: __salt, iterations: 200000, hash: "SHA-256"},
+                                 k, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
+}
+async function __dec(buf) {
+  const b = new Uint8Array(buf);
+  return new Uint8Array(await crypto.subtle.decrypt({name: "AES-GCM", iv: b.slice(0, 12)}, __key, b.slice(12)));
+}
+async function __gunzip(parts) {
+  const s = new Blob(parts).stream().pipeThrough(new DecompressionStream("gzip"));
+  return await new Response(s).text();
+}
+function __status(t) { const m = document.getElementById("main"); if (m) m.innerHTML = '<div class="empty">' + t + '</div>'; }
+function __ask(wrong) {
+  return new Promise(res => {
+    const m = document.getElementById("main");
+    m.innerHTML = '<form id="pwf" class="empty"><p>' +
+      (wrong ? "Wrong password — try again." : "Enter the password to open the dashboard.") +
+      '</p><input type="password" id="pw" autocomplete="current-password" style="padding:7px 10px;border:1px solid var(--line);border-radius:7px;font:inherit;background:var(--panel);color:var(--ink)"> ' +
+      '<button class="theme" type="submit">Open</button></form>';
+    const i = document.getElementById("pw"); i.focus();
+    document.getElementById("pwf").onsubmit = e => { e.preventDefault(); res(i.value); };
+  });
+}
+async function __get(path) {
+  const r = await fetch(path + "?v=fd76e67f", {cache: "no-store"});
+  if (!r.ok) throw new Error(path + " " + r.status);
+  return r.arrayBuffer();
+}
+async function __unlock(first) {
+  let pw = null, tried = false;
+  try { pw = localStorage.getItem("cwatch-pw"); } catch (e) {}
+  for (;;) {
+    if (pw !== null) {
+      try {
+        __key = await __derive(pw);
+        const t = await __dec(first);
+        try { localStorage.setItem("cwatch-pw", pw); } catch (e) {}
+        return t;
+      } catch (e) { try { localStorage.removeItem("cwatch-pw"); } catch (e2) {} tried = true; }
+    }
+    pw = await __ask(tried);
+    __status("Opening…");
+  }
+}
+(async () => {
+if (!window.DecompressionStream) throw new Error("this browser is too old — update it, or open the link in Chrome or Safari");
+const D = await (async () => { const rest = ["d01.bin", "d02.bin", "d03.bin"]; const parts = [await __unlock(await __get("data/d00.bin"))]; for (const [n, f] of rest.entries()) { __status("Loading data " + (n + 2) + " of " + (rest.length + 1) + "…"); parts.push(await __dec(await __get("data/" + f))); } __status("Opening…"); return JSON.parse(await __gunzip(parts)); })();
+const $ = s => document.querySelector(s);
+const esc = s => (s == null ? "" : String(s)).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const byKey = Object.fromEntries(D.ads.map(a => [a.ad_key, a]));
+const THUMBS = {};
+const comp = D.ads.filter(a => !a.us);
+const live = comp.filter(a => a.active);
+// Rain investigations keyed by the ad targets they matched (report._rain adds tkeys).
+const rainBy = {};
+(D.rain || []).forEach(r => (r.tkeys || []).forEach(k => (rainBy[k] = rainBy[k] || []).push(r)));
+const rainFor = a => (a.tkey && rainBy[a.tkey]) || [];
+let state = {tab: "ads", q: "", firm: "", adv: "", advName: "", plat: "", theory: "", liveOnly: true, gapOnly: false, rainOnly: false, noBreach: false, sort: null, open: null};
+try { Object.assign(state, JSON.parse(localStorage.getItem("cwatch2") || "{}"), {open: null}); } catch (e) {}
+const save = () => { try { localStorage.setItem("cwatch2", JSON.stringify({tab: state.tab, liveOnly: state.liveOnly, noBreach: state.noBreach})); } catch (e) {} };
+
+try { const t = localStorage.getItem("cwatch-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+$("#theme").onclick = () => {
+  const cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const nx = cur === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = nx;
+  try { localStorage.setItem("cwatch-theme", nx); } catch (e) {}
+};
+
+$("#refresh").onclick = () => { $("#refresh").textContent = "↻ Loading…"; location.reload(); };
+
+const lastRun = D.runs[D.runs.length - 1];
+const fmtWhen = s => { const d = new Date((s || "").replace(" ", "T")); return isNaN(d) ? (s || "never") : d.toLocaleString([], {weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit"}); };
+$("#sub").textContent = `Data as of ${fmtWhen(lastRun && lastRun.started)} sweep · updates every 3½ hours, 6 AM–8 PM · Meta Ad Library + Google Ads Transparency` + (D.baseline ? " · first sweep = baseline (“new” starts next run)" : "");
+const newAds = comp.filter(a => a.new);
+const gaps = D.campaigns.filter(c => !c.us && c.n_firms > 0);
+// Each number opens the view behind it (David, 2026-09-28).
+const KPIS = [
+  [live.length, "live competitor ads", {tab: "ads", liveOnly: true}],
+  [new Set(live.map(a => a.firm || a.advertiser)).size, "active advertisers", {tab: "firms"}],
+  [D.campaigns.length, "live target campaigns", {tab: "campaigns", gapOnly: false}],
+  [gaps.length, "campaigns L&K isn't running", {tab: "campaigns", gapOnly: true}],
+  [D.baseline ? "—" : newAds.length, "new ads this sweep", {tab: "new"}],
+  [D.discovered.filter(d => d.live).length, "untracked legal advertisers", {tab: "discovered"}],
+];
+$("#kpis").innerHTML = KPIS.map(([n, l], i) =>
+  `<button class="kpi" data-kpi="${i}" title="Show these">${`<b>${n}</b><span>${l} ›</span>`}</button>`).join("");
+document.querySelectorAll("#kpis .kpi").forEach(b => b.onclick = () => {
+  Object.assign(state, {q: "", firm: "", adv: "", advName: "", plat: "", theory: "", rainOnly: false, open: null}, KPIS[b.dataset.kpi][2]);
+  save(); render();
+  $("#tabs").scrollIntoView({behavior: "smooth", block: "start"});
+});
+
+const TABS = [
+  ["ads", "All ads", () => comp.length],
+  ["campaigns", "Campaigns by target", () => D.campaigns.length],
+  ["new", "New this sweep", () => D.baseline ? 0 : newAds.length],
+  ["firms", "Firms", () => D.firms.filter(f => !f.us).length],
+  ["rain", "Rain × Ads", () => (D.rain || []).length],
+  ["discovered", "Discovered advertisers", () => D.discovered.length],
+  ["ours", "Our ads (L&K)", () => D.ads.filter(a => a.us && a.active).length],
+];
+function renderTabs() {
+  $("#tabs").innerHTML = TABS.map(([k, l, n]) => `<button data-tab="${k}" class="${state.tab === k ? "on" : ""}">${l}<span class="n">${n()}</span></button>`).join("");
+  document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => { state.tab = b.dataset.tab; state.adv = ""; state.advName = ""; save(); render(); });
+}
+
+// "+ Track" (David/Ed, 2026-09-29): opens a Teams chat with T Walker with the command pre-typed.
+const trackUrl = (name, pid) => "https://teams.microsoft.com/l/chat/0/0?users=twalker@zlk.com&message=" +
+  encodeURIComponent(`ads track ${name} (${pid})`);
+const fbUrl = pid => `https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&view_all_page_id=${encodeURIComponent(pid)}`;
+function showAdvertiser(pid, name) {
+  Object.assign(state, {tab: "ads", adv: String(pid), advName: name, firm: "", q: "", theory: "", plat: "", rainOnly: false, liveOnly: false});
+  render(); $("#tabs").scrollIntoView({behavior: "smooth", block: "start"});
+}
+async function forwardAd(key) {
+  const a = byKey[key]; if (!a) return;
+  const camp = a.tkey ? D.campaigns.find(c => c.key === a.tkey) : null;
+  const who = a.firm || `${a.advertiser} (untracked)`;
+  const lines = [`${who}${a.target ? " — " + a.target : ""}${a.headline ? ": " + a.headline : ""}`];
+  if (camp && camp.what) lines.push(camp.what);
+  lines.push(`Ad: ${a.library_url}`);
+  if (a.link_url) lines.push(`Landing page: ${a.link_url}`);
+  const text = lines.join("\n");
+  if (navigator.share) { try { await navigator.share({title: who, text}); return; } catch (e) { if (e && e.name === "AbortError") return; } }
+  window.open("https://teams.microsoft.com/share?href=" + encodeURIComponent(a.library_url) + "&msgText=" + encodeURIComponent(text), "_blank", "noopener");
+}
+function tagsFor(a) {
+  return (a.new ? '<span class="tag new">NEW</span> ' : "") + (a.active ? "" : '<span class="tag off">stopped</span> ');
+}
+function card(a) {
+  const img = a.img ? `<img loading="lazy" src="${esc(a.img)}" onerror="this.onerror=null;this.src='${esc(a.image_url || "")}';this.style.display=this.src?'':'none'">`
+    : a.ti ? `<img alt="" data-ti="${esc(a.ti)}"${THUMBS[a.ti] ? ` src="${THUMBS[a.ti]}"` : ""}>`
+    : `<span class="muted">${esc(a.ad_format || "no image")}</span>`;
+  const who = a.firm || `${a.advertiser} (untracked)`;
+  return `<div class="card"><div class="img">${img}</div><div class="bd">
+    <div class="who"><span>${tagsFor(a)}<b>${esc(who)}</b></span><span>${a.platform === "meta" ? "Meta" : "Google"}</span></div>
+    ${a.target ? `<div><span class="chip">🎯 ${esc(a.target)}</span>${a.theory ? `<span class="chip">${esc(a.theory)}</span>` : ""}${a.claim_type ? `<span class="chip">${esc(a.claim_type)}</span>` : ""}</div>` : (a.theory ? `<div><span class="chip">${esc(a.theory)}</span></div>` : "")}
+    ${rainFor(a).map(r => `<div class="rain">Rain · ${esc(r.rain_date)} · ${r.investigating_firms.map(f => esc(f.trim())).join(", ")} investigating ${esc(r.company)}${r.title ? `<div class="muted">${esc(r.title)}</div>` : ""}</div>`).join("")}
+    ${a.headline ? `<div class="hl">${esc(a.headline)}</div>` : ""}
+    ${a.body ? `<div class="tx">${esc(a.body)}</div>` : ""}
+    <div class="ft">
+      <span>start ${esc(a.start_date || "?")}</span>
+      ${a.versions > 1 ? `<span>${a.versions} versions</span>` : ""}
+      ${a.link_url ? `<a href="${esc(a.link_url)}" target="_blank" rel="noopener">landing page ↗</a>` : (a.domain ? `<span>${esc(a.domain)}</span>` : "")}
+      <a href="${esc(a.library_url)}" target="_blank" rel="noopener">ad library ↗</a>
+      <a href="#" data-fwd="${esc(a.ad_key)}">Forward ↗</a>
+      ${!a.tracked && a.platform === "meta" && a.advertiser_id ? `<a href="${esc(trackUrl(a.advertiser, a.advertiser_id))}" target="_blank" rel="noopener">+ Track</a>` : ""}
+    </div></div></div>`;
+}
+
+function filterBar(opts = {}) {
+  const firms = [...new Set(comp.map(a => a.firm).filter(Boolean))].sort();
+  const theories = [...new Set(D.ads.map(a => a.theory).filter(Boolean))].sort();
+  return `<div class="bar">
+    <input type="search" id="q" placeholder="Search target, firm, ad text…" value="${esc(state.q)}">
+    ${opts.firm !== false ? `<select id="firm"><option value="">All firms</option><option value="__disc" ${state.firm === "__disc" ? "selected" : ""}>Untracked advertisers</option>${firms.map(f => `<option ${state.firm === f ? "selected" : ""}>${esc(f)}</option>`).join("")}</select>` : ""}
+    <select id="theory"><option value="">All theories</option>${theories.map(t => `<option ${state.theory === t ? "selected" : ""}>${esc(t)}</option>`).join("")}</select>
+    <select id="plat"><option value="">Meta + Google</option><option value="meta" ${state.plat === "meta" ? "selected" : ""}>Meta</option><option value="google" ${state.plat === "google" ? "selected" : ""}>Google</option></select>
+    ${opts.live !== false ? `<label><input type="checkbox" id="live" ${state.liveOnly ? "checked" : ""}> live only</label>` : ""}
+    ${opts.gap ? `<label><input type="checkbox" id="gap" ${state.gapOnly ? "checked" : ""}> only ones L&K isn't running</label>` : ""}
+    ${opts.rain ? `<label><input type="checkbox" id="rainonly" ${state.rainOnly ? "checked" : ""}> only Rain investigations</label>` : ""}
+    <label><input type="checkbox" id="nobreach" ${state.noBreach ? "checked" : ""}> exclude data breach</label>
+  </div>`;
+}
+function wireBar() {
+  const on = (id, ev, fn) => { const el = $("#" + id); if (el) el[ev] = fn; };
+  on("q", "oninput", e => { state.q = e.target.value; renderBody(); });
+  on("firm", "onchange", e => { state.firm = e.target.value; state.adv = ""; state.advName = ""; renderBody(); });
+  on("theory", "onchange", e => { state.theory = e.target.value; renderBody(); });
+  on("plat", "onchange", e => { state.plat = e.target.value; renderBody(); });
+  on("live", "onchange", e => { state.liveOnly = e.target.checked; save(); renderBody(); });
+  on("gap", "onchange", e => { state.gapOnly = e.target.checked; renderBody(); });
+  on("rainonly", "onchange", e => { state.rainOnly = e.target.checked; renderBody(); });
+  on("nobreach", "onchange", e => { state.noBreach = e.target.checked; save(); renderBody(); });
+}
+// "exclude data breach" (Ed, 2026-09-29): hides data-breach ads/campaigns on every tab.
+const isBreach = t => /data breach/i.test(t || "");
+const matchAd = a => {
+  if (state.adv && String(a.advertiser_id) !== state.adv) return false;
+  if (state.liveOnly && !a.active) return false;
+  if (state.plat && a.platform !== state.plat) return false;
+  if (state.theory && a.theory !== state.theory) return false;
+  if (state.noBreach && isBreach(a.theory)) return false;
+  if (state.firm === "__disc" && a.tracked) return false;
+  if (state.firm && state.firm !== "__disc" && a.firm !== state.firm) return false;
+  if (state.q) {
+    const hay = [a.firm, a.advertiser, a.target, a.theory, a.headline, a.body, a.description, a.link_url, a.domain,
+      ...rainFor(a).flatMap(r => ["rain", r.company, r.title, ...r.investigating_firms])].join(" ").toLowerCase();
+    if (!state.q.toLowerCase().split(/\s+/).every(w => hay.includes(w))) return false;
+  }
+  return true;
+};
+
+const BODIES = {
+  campaigns() {
+    let cs = D.campaigns.filter(c => {
+      if (state.gapOnly && c.us) return false;
+      if (state.theory && c.theory !== state.theory) return false;
+      if (state.noBreach && isBreach(c.theory)) return false;
+      if (state.plat && !c.platforms.includes(state.plat)) return false;
+      if (state.firm && state.firm !== "__disc" && !c.firms.includes(state.firm)) return false;
+      if (state.firm === "__disc" && !c.firms.some(f => f.endsWith("*"))) return false;
+      if (state.q) { const h = [c.target, c.theory, c.claim_type, c.what, ...c.firms].join(" ").toLowerCase(); if (!h.includes(state.q.toLowerCase())) return false; }
+      return true;
+    });
+    if (!cs.length) return `<div class="empty">No campaigns match.</div>`;
+    return `<table><thead><tr><th>Target</th><th>Theory</th><th class="hide-sm">Type</th><th>Competitors running it</th><th class="num">Ads</th><th>L&K</th><th class="hide-sm">Since</th></tr></thead><tbody>` +
+      cs.map(c => `<tr class="camp" data-k="${esc(c.key)}"><td><b>${esc(c.target)}</b> ${c.new ? '<span class="tag new">NEW</span>' : ""}${c.what ? `<div class="what">${esc(c.what)}</div>` : ""}</td>
+        <td>${esc(c.theory || "")}</td><td class="hide-sm">${esc(c.claim_type || "")}</td>
+        <td>${c.firms.map(f => `<span class="chip ${f.endsWith("*") ? "disc" : ""}">${esc(f.replace(/\*$/, ""))}</span>`).join("") || '<span class="muted">only us</span>'}</td>
+        <td class="num">${c.n_ads}</td><td>${c.us ? '<span class="tag ovl">running</span>' : '<span class="tag gap">GAP</span>'}</td>
+        <td class="hide-sm muted">${esc(c.first_start || "")}</td></tr>` +
+        (state.open === c.key ? `<tr class="expand"><td colspan="7"><div class="grid">${c.ads.map(k => card(byKey[k])).join("")}</div></td></tr>` : "")).join("") +
+      `</tbody></table><p class="muted">Italic chips = advertisers found by keyword discovery but not on the tracked-firm list. Click a row to see its ads.</p>`;
+  },
+  new() {
+    if (D.baseline) return `<div class="empty">This is the first sweep, so everything is the baseline. From the next sweep on, this tab shows only ads that appeared since the previous one.</div>`;
+    const xs = newAds.filter(matchAd);
+    return xs.length ? `<div class="grid">${xs.map(card).join("")}</div>` : `<div class="empty">Nothing new this sweep.</div>`;
+  },
+  ads() {
+    const xs = comp.filter(matchAd).filter(a => !state.rainOnly || rainFor(a).length);
+    const shown = xs.slice(0, 300);
+    const nRain = xs.filter(a => rainFor(a).length).length;
+    const advBar = state.adv ? `<p><span class="chip">All ads we've collected for <b>${esc(state.advName)}</b> (live + stopped)</span> <a href="#" data-clearadv="1">✕ show everyone</a> · <a href="${esc(fbUrl(state.adv))}" target="_blank" rel="noopener">Facebook ↗</a></p>` : "";
+    return advBar + `<p class="muted">${xs.length} ads · ${nRain} aimed at a company in a Rain investigation${xs.length > 300 ? " (showing first 300 — narrow the filters)" : ""}</p><div class="grid">${shown.map(card).join("")}</div>`;
+  },
+  ours() {
+    // Our own ads: a competitor firm picked on another tab must not apply here (this tab has no
+    // firm picker, so on a phone the tab just looked empty — David, 2026-09-28).
+    const keep = state.firm; state.firm = "";
+    const xs = D.ads.filter(a => a.us).filter(matchAd);
+    state.firm = keep;
+    if (!xs.length) return `<div class="empty">No L&K ads match these filters${state.q || state.theory || state.plat ? " — clear the search / filters above" : ""}.</div>`;
+    return `<p class="muted">${xs.length} L&K ads${xs.length > 300 ? " (showing first 300)" : ""}</p><div class="grid">${xs.slice(0, 300).map(card).join("")}</div>`;
+  },
+  firms() {
+    const rows = D.firms.filter(f => !f.us).map(f => {
+      const fa = D.ads.filter(a => a.firm === f.name), lv = fa.filter(a => a.active);
+      const tg = {}; lv.forEach(a => { if (a.target) tg[a.target] = (tg[a.target] || 0) + 1; });
+      return {f, live: lv.length, meta: lv.filter(a => a.platform === "meta").length, google: lv.filter(a => a.platform === "google").length,
+        nw: fa.filter(a => a.new).length, targets: Object.entries(tg).sort((a, b) => b[1] - a[1]).slice(0, 10)};
+    }).sort((a, b) => b.live - a.live);
+    return `<table><thead><tr><th>Firm</th><th class="hide-sm">Group</th><th class="num">Live</th><th class="num">Meta</th><th class="num">Google</th><th class="num">New</th><th>Top live targets</th><th class="hide-sm">Sources</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td><a href="#" data-firm="${esc(r.f.name)}"><b>${esc(r.f.name)}</b></a></td><td class="hide-sm muted">${esc(r.f.group || "")}</td>
+        <td class="num">${r.live}</td><td class="num">${r.meta}</td><td class="num">${r.google}</td><td class="num">${r.nw || ""}</td>
+        <td>${r.targets.map(([t, n]) => `<span class="chip">${esc(t)} · ${n}</span>`).join("")}</td>
+        <td class="hide-sm muted" style="font-size:12px">${r.f.meta.map(p => `<a target="_blank" href="https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&view_all_page_id=${p}">FB ${p}</a>`).join(" ")} ${r.f.google.map(g => `<a target="_blank" href="https://adstransparency.google.com/advertiser/${g}?region=US">G</a>`).join(" ")}${!r.f.meta.length && !r.f.google.length ? "no ids — domain search only" : ""}</td></tr>`).join("") +
+      `</tbody></table>`;
+  },
+  rain() {
+    const q = state.q.toLowerCase();
+    const rs = (D.rain || []).filter(r => !q || [r.company, r.domain, r.title, ...r.investigating_firms, ...r.advertisers].join(" ").toLowerCase().includes(q))
+      .filter(r => !state.gapOnly || !r.live_ads);
+    if (!(D.rain || []).length) return `<div class="empty">T Walker's ledger (Rain Intelligence) wasn't found on this machine.</div>`;
+    return `<p class="muted">Rain Intelligence investigations (from T Walker's ledger) matched against live ads. ${rs.filter(r => r.live_ads).length} of ${rs.length} have someone advertising.</p>
+      <table><thead><tr><th>Company</th><th>Investigating (Rain)</th><th class="hide-sm">Rain date</th><th class="num">Live ads</th><th>Who's advertising</th><th>L&K</th></tr></thead><tbody>` +
+      rs.map(r => `<tr><td><b>${esc(r.company)}</b>${r.domain ? `<div class="muted" style="font-size:12px">${esc(r.domain)}</div>` : ""}<div class="muted" style="font-size:12px">${esc(r.title || "")}</div></td>
+        <td>${r.investigating_firms.map(f => `<span class="chip">${esc(f.trim())}</span>`).join("")}</td>
+        <td class="hide-sm muted">${esc(r.rain_date)}</td><td class="num">${r.live_ads || ""}</td>
+        <td>${r.advertisers.map(f => `<span class="chip">${esc(f)}</span>`).join("") || '<span class="muted">nobody yet</span>'}</td>
+        <td>${r.lk_advertising ? '<span class="tag ovl">running</span>' : (r.live_ads ? '<span class="tag gap">GAP</span>' : "")}</td></tr>`).join("") + `</tbody></table>`;
+  },
+  discovered() {
+    const q = state.q.toLowerCase();
+    const xs = D.discovered.filter(d => !q || [d.name, d.sample, ...d.targets].join(" ").toLowerCase().includes(q));
+    return `<p class="muted">Pages running legal-recruitment ads found by the keyword sweeps that aren't on the tracked list. Tap a name to see every ad we've collected for it.</p>
+      <p class="muted">Counts are the ads our keyword searches have caught, not everything they run — tap <b>+ Track</b> to pull all of an advertiser's ads from the next sweep on.</p>
+      <table><thead><tr><th>Advertiser</th><th class="num">Live (caught)</th><th class="num">Seen (caught)</th><th>Targets</th><th class="hide-sm">Sample headline</th></tr></thead><tbody>` +
+      xs.map(d => `<tr><td><a href="#" data-adv="${esc(d.page_id)}" data-name="${esc(d.name)}"><b>${esc(d.name)}</b></a>
+        <div style="font-size:12px;margin-top:3px"><a target="_blank" rel="noopener" href="${esc(fbUrl(d.page_id))}">Facebook ↗</a> · <a target="_blank" rel="noopener" href="${esc(trackUrl(d.name, d.page_id))}"><b>+ Track</b></a></div></td>
+        <td class="num">${d.live}</td><td class="num">${d.n}</td><td>${d.targets.map(t => `<span class="chip">${esc(t)}</span>`).join("")}</td><td class="hide-sm muted">${esc(d.sample || "")}</td></tr>`).join("") + `</tbody></table>`;
+  },
+};
+
+function renderBody() {
+  const el = $("#body");
+  el.innerHTML = BODIES[state.tab]();
+  el.querySelectorAll("tr.camp").forEach(tr => tr.onclick = () => { state.open = state.open === tr.dataset.k ? null : tr.dataset.k; renderBody(); });
+  el.querySelectorAll("a[data-firm]").forEach(a => a.onclick = e => { e.preventDefault(); Object.assign(state, {firm: a.dataset.firm, adv: "", advName: "", tab: "ads", liveOnly: false, q: ""}); render(); $("#tabs").scrollIntoView({behavior: "smooth", block: "start"}); });
+  el.querySelectorAll("a[data-adv]").forEach(a => a.onclick = e => { e.preventDefault(); showAdvertiser(a.dataset.adv, a.dataset.name); });
+  el.querySelectorAll("a[data-clearadv]").forEach(a => a.onclick = e => { e.preventDefault(); Object.assign(state, {adv: "", advName: "", liveOnly: true}); render(); });
+  el.querySelectorAll("a[data-fwd]").forEach(a => a.onclick = e => { e.preventDefault(); forwardAd(a.dataset.fwd); });
+}
+function render() {
+  renderTabs();
+  const barOpts = {campaigns: {gap: true, live: false}, discovered: null, rain: null, firms: null, new: {live: false}, ads: {rain: true}, ours: {firm: false}}[state.tab];
+  const simple = {discovered: "", rain: `<label><input type="checkbox" id="gap" ${state.gapOnly ? "checked" : ""}> only ones nobody is advertising yet</label>`};
+  $("#main").innerHTML = (barOpts === null ? (state.tab in simple ? `<div class="bar"><input type="search" id="q" placeholder="Search…" value="${esc(state.q)}">${simple[state.tab]}</div>` : "") : filterBar(barOpts)) + `<div id="body"></div>`;
+  wireBar();
+  renderBody();
+}
+render();
+
+// Published copy: thumbnails ship as chunk files next to the page (external image hosts are
+// blocked there). Load them in the background and fill any card already on screen.
+function fillThumbs() {
+  document.querySelectorAll("img[data-ti]:not([src])").forEach(im => {
+    const u = THUMBS[im.dataset.ti];
+    if (u) im.src = u;
+  });
+}
+(async () => {
+  for (const f of (D.thumb_chunks || [])) {
+    try {
+      Object.assign(THUMBS, JSON.parse(await __gunzip([await __dec(await __get("thumbs/" + f))]))); fillThumbs();
+    } catch (e) { /* a missing chunk just leaves those cards without a picture */ }
+  }
+})();
+})().catch(e => { const m = document.getElementById("main"); if (m) m.textContent = "Couldn't load the dashboard data (" + e.message + "). Try Refresh."; });
+</script>
+</body>
+</html>
